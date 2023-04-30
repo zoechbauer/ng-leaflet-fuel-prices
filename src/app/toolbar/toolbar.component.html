@@ -1,0 +1,26 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <span>Tankstellenpreise und Maps</span>
+    <span style="margin-left: 30%">Einige Beispiele</span>
+    <span class="column-spacer"></span>
+    <button
+      mat-icon-button
+      class="example-icon"
+      aria-label="Example icon-button with menu icon"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+  </mat-toolbar-row>
+
+  <mat-toolbar-row>
+    <button mat-icon-button (click)="toggleSidenav.emit()">
+      <mat-icon>menu</mat-icon><span>Menü</span>
+    </button>
+    <span class="column-spacer"></span>
+    <div>
+      <a matLine routerLink="leaflet" routerLinkActive="active-link"
+        >Leaflet Beispiel</a
+      >
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>

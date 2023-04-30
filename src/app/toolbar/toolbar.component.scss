@@ -1,0 +1,19 @@
+.column-spacer {
+  flex: 1 1 auto;
+}
+
+.active-link {
+  border-bottom: 2px solid rgb(142, 128, 206);
+}
+
+a {
+  color: white !important;
+  padding-right: 35px;
+  text-decoration: none;
+  font-size: 15px;
+}
+
+mat-toolbar-row:last-child {
+  height: 35px;
+  padding-bottom: 15px;
+}

@@ -1,0 +1,21 @@
+<mat-sidenav-container class="app-sidenav-container">
+  <mat-sidenav #sidenav class="app-sidenav mat-elevation-z10" [mode]="'over'">
+      <mat-toolbar color="primary">
+          Alle Programme
+      </mat-toolbar>
+      <mat-nav-list fxLayout="column">
+          <a routerLink="leaflet" routerLinkActive="active-link">
+              <mat-icon>streetview</mat-icon>Leaftlet Beispiel
+          </a>
+      </mat-nav-list>
+  </mat-sidenav>
+
+  <div class="app-sidenav-content">
+      <app-toolbar (toggleSidenav)="sidenav.toggle()"></app-toolbar>
+      <div class="wrapper">
+          <router-outlet></router-outlet>
+      </div>
+  </div>
+
+</mat-sidenav-container>
+
