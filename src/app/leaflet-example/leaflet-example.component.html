@@ -1,20 +1,30 @@
-<div>
-  <h1 class="site-header">Leaflet Beispiel</h1>
-  <div class="card-content">
-      <mat-card class="api-card">
-          <mat-card-header>
-              <div mat-card-avatar class="api-header-image"></div>
-              <mat-card-title>Ort in Map anzeigen</mat-card-title>
-              <mat-card-subtitle>Test<mat-icon>mood</mat-icon></mat-card-subtitle>
-          </mat-card-header>
-          <mat-card-content>
-              <p>In Arbeit</p>
-          </mat-card-content>
-          <mat-card-actions align="end">
-              <button mat-button >Daten laden</button>
-          </mat-card-actions>
-      </mat-card>
-  </div>
+<div class="container">
+  <mat-card>
+    <mat-card-content>
+      <form>
+        <mat-form-field appearance="fill" style="width: 50%;">
+          <mat-label>Adresse</mat-label>
+          <input
+            matInput
+            placeholder="Adresse eingeben"
+            [(ngModel)]="address"
+            name="address"
+            required
+          />
+        </mat-form-field>
+        <button mat-raised-button color="primary" (click)="search()" style="margin-left: 20px;">
+          Suchen
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <div *ngIf="latitude"
+    leaflet
+    style="height: 680px;"
+    [leafletOptions]="options"
+    [leafletLayers]="layers"
+    (leafletMapReady)="onMapReady($event)"
+    #mapElement
+  ></div>
 </div>
-
-

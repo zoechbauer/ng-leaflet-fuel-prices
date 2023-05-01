@@ -7,10 +7,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToolbarComponent } from './toolbar/toolbar.component';
-
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MaterialModule } from './material.module';
 import { SidenavComponent } from './sidenav/sidenav.component';
 import { LeafletExampleComponent } from './leaflet-example/leaflet-example.component';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -21,10 +23,13 @@ import { LeafletExampleComponent } from './leaflet-example/leaflet-example.compo
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     // FlexLayoutModule,
-    MaterialModule
+    LeafletModule,
+    MaterialModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
