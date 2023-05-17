@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   marker,
   icon,
@@ -7,8 +7,10 @@ import {
   MapOptions,
   tileLayer,
   Marker,
+  LatLngLiteral,
 } from 'leaflet';
 import { HttpClient } from '@angular/common/http';
+import { LeafletService } from '../services/leaflet.service';
 
 @Component({
   selector: 'app-leaflet-example',
@@ -17,24 +19,23 @@ import { HttpClient } from '@angular/common/http';
 })
 export class LeafletExampleComponent implements OnInit {
   zoom: number = 16;
+  maxZoom: number = 18;
   private map!: Map;
-  latitude!: number;
-  longitude!: number;
+  coord!: LatLngLiteral;
   address!: string;
   layers: Marker<any>[] = [];
   options!: MapOptions;
 
-
   constructor(
     private http: HttpClient,
-    private changeDetectorRef: ChangeDetectorRef
+    private leafletService: LeafletService
   ) {}
 
   ngOnInit(): void {
     this.options = {
       layers: [
         tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: 18,
+          maxZoom: this.maxZoom,
           attribution: '&copy; OpenStreetMap',
         }),
       ],
@@ -43,42 +44,30 @@ export class LeafletExampleComponent implements OnInit {
     };
   }
 
-  search() {
-    this.http
-      .get<any[]>('https://nominatim.openstreetmap.org/search', {
-        params: {
-          q: this.address,
-          format: 'json',
-        },
-      })
-      .subscribe((data) => {
-        console.log('data', data);
+  searchAddressAndSetMarker() {
+    this.leafletService.getLatLngByAddress(this.address)
+      .subscribe((coord: LatLngLiteral) => {
+        console.log('***coord', coord);
+        this.coord = coord;
 
-        if (data.length > 0) {
-          this.latitude = data[0].lat;
-          this.longitude = data[0].lon;
-
-          this.options.center = latLng(this.latitude, this.longitude);
-          this.options.zoom = this.zoom;
-          if (this.map) {
-            this.map.setView([this.latitude, this.longitude], 18);
-          }
-
-          this.layers = [
-            marker([this.latitude, this.longitude], {
-              icon: icon({
-                iconSize: [25, 41],
-                iconAnchor: [13, 41],
-                iconUrl: 'assets/marker-icon.png',
-                shadowUrl: 'assets/marker-shadow.png',
-              }),
-            }),
-          ];
-          console.log('center', this.options.center);
-
-          // Trigger a change detection cycle to update the view
-          this.changeDetectorRef.detectChanges();
+        this.options.center = latLng(coord.lat, coord.lng);
+        this.options.zoom = this.zoom;
+        if (this.map) {
+          this.map.setView([coord.lat, coord.lng], this.zoom);
         }
+
+        this.layers = [
+          marker([coord.lat, coord.lng], {
+            icon: icon({
+              iconSize: [25, 41],
+              iconAnchor: [13, 41],
+              iconUrl: 'assets/marker-icon.png',
+              shadowUrl: 'assets/marker-shadow.png',
+            }),
+          }),
+        ];
+        console.log('center', this.options.center);
+
       });
   }
 

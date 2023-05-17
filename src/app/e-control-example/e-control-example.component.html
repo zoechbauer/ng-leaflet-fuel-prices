@@ -1,0 +1,91 @@
+<h2>e-control api Beispiel</h2>
+
+<form [formGroup]="form" #myForm="ngForm" (ngSubmit)="searchAddressAndGasStations()">
+  <mat-form-field class="address">
+    <mat-label>Adresse</mat-label>
+    <input
+      matInput
+      formControlName="address"
+      placeholder="Geben Sie Adresse ein..."
+      value=""
+    />
+  </mat-form-field>
+
+  <mat-checkbox formControlName="includeClosedStations" class="margin-left"
+    >auch geschlossene Tankstellen</mat-checkbox
+  >
+
+  <mat-form-field class="margin-left">
+    <mat-label>Treibstoff</mat-label>
+    <mat-select formControlName="selectedFuelType">
+      <mat-option *ngFor="let fuel of fuels" [value]="fuel.value">
+        {{ fuel.displayValue }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-button color="primary" type="submit" [disabled]="myForm.invalid" class="margin-left">Suchen</button>
+</form>
+
+<div *ngIf="coordinates && (!noData)">
+  <h3>Ergebnisse:</h3>
+  <p>Preise werden von e-control nur in den ersten 5 Tankstellen bereitgestellt, damit Tankstellen keine Preisermittlungen durchführen können!</p>
+  <p>Nach Auswahl einer Tankstelle werden die Detaildaten im JSON-Format unterhalb der Tabelle angezeigt.</p>
+  <mat-form-field class="filter">
+    <mat-label>Filter</mat-label>
+    <input
+      matInput
+      (keyup)="applyFilter($event)"
+      placeholder="Sie können jede Spalte filtern"
+      #input
+    />
+  </mat-form-field>
+  <table mat-table [dataSource]="dataSource" matSort>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Tankstelle</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
+    <ng-container matColumnDef="location.city">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Ort</th>
+      <td mat-cell *matCellDef="let element">{{ element.location.city }}</td>
+    </ng-container>
+    <ng-container matColumnDef="location.address">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Strasse</th>
+      <td mat-cell *matCellDef="let element">{{ element.location.address }}</td>
+    </ng-container>
+    <ng-container matColumnDef="open">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>geöffnet</th>
+      <td mat-cell *matCellDef="let element">{{ element.open }}</td>
+    </ng-container>
+    <ng-container matColumnDef="prices[0].amount">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Preis</th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.prices[0]?.amount }}
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="getTableRecord(row)"
+      [ngClass]="{ selectedRow: row === selectedGasStation }"
+    ></tr>
+
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell" colspan="5">
+        Es wurden keine Daten für Filter "{{ input.value }}" gefunden!
+      </td>
+    </tr>
+  </table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 100]"></mat-paginator>
+
+  <div *ngIf="selectedGasStation">
+    <h3>Detaildaten</h3>
+    <pre>
+    {{ selectedGasStation | json }}
+  </pre
+    >
+  </div>
+</div>
+<div *ngIf="noData">Es wurden zu dieser Adresse keine Tankstellen gefunden!</div>

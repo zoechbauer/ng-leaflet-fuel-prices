@@ -1,7 +1,7 @@
 <div class="container">
   <mat-card>
     <mat-card-content>
-      <form>
+      <form #myForm="ngForm" (ngSubmit)="searchAddressAndSetMarker()">
         <mat-form-field appearance="fill" style="width: 50%;">
           <mat-label>Adresse</mat-label>
           <input
@@ -12,14 +12,17 @@
             required
           />
         </mat-form-field>
-        <button mat-raised-button color="primary" (click)="search()" style="margin-left: 20px;">
+        <button mat-button color="primary" type="submit" [disabled]="myForm.invalid" style="margin-left: 20px;">
           Suchen
         </button>
+        <div *ngIf="coord">
+          Breitengrad: {{coord.lat}} Längengrad: {{coord.lng}}
+        </div>
       </form>
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="latitude"
+  <div *ngIf="coord"
     leaflet
     style="height: 680px;"
     [leafletOptions]="options"

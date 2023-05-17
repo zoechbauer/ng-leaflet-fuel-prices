@@ -1,0 +1,23 @@
+table {
+  width: 100%;
+
+  .selectedRow {
+    background-color: lightskyblue;
+  }
+
+}
+
+.filter {
+  font-size: 14px;
+  width: 50%;
+}
+
+form {
+  .address {
+    width: 50%;
+  }
+
+  .margin-left {
+    margin-left: 20px;
+  }
+}

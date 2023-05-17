@@ -3,9 +3,15 @@
       <mat-toolbar color="primary">
           Alle Programme
       </mat-toolbar>
-      <mat-nav-list fxLayout="column">
+      <mat-nav-list>
           <a routerLink="leaflet" routerLinkActive="active-link">
-              <mat-icon>streetview</mat-icon>Ort auf Karte markieren
+              <mat-icon>place</mat-icon>Ort auf Karte markieren
+          </a>
+          <a routerLink="e-control" routerLinkActive="active-link">
+            <mat-icon>rss_feed</mat-icon>e-control API Beispiel
+          </a>
+          <a routerLink="geocoding" routerLinkActive="active-link">
+            <mat-icon>add_location</mat-icon>Geocding Beispiel
           </a>
       </mat-nav-list>
   </mat-sidenav>
