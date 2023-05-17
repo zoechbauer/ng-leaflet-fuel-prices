@@ -12,6 +12,8 @@ import { GeocodingService } from '../services/geocoding.service';
 })
 export class GetCoordExampleComponent implements OnInit{
   form!: FormGroup;
+  search: boolean = false;
+  displayName: string = "";
   coordinates!: LatLngLiteral;
   latDeg: string = "";
   lngDeg: string = "";
@@ -29,15 +31,33 @@ export class GetCoordExampleComponent implements OnInit{
   }
 
   searchAddress() {
+    this.clearResult();
+
     this.geocodingService.geocodeAddress(this.form.controls["address"].value).subscribe(response => {
+      this.search = true;
+      console.log(response);
+
       if (response.length > 0) {
         this.coordinates = {
           lat: response[0].lat,
           lng: response[0].lon
         };
+        this.displayName = response[0].display_name;
+
         this.calcCoordInDeg();
       }
     });
+  }
+
+  noData(): boolean {
+    return this.coordinates?.lat === 0 && this.coordinates?.lng === 0;
+  }
+
+  private clearResult() {
+    this.coordinates = {
+      lat: 0,
+      lng: 0
+    };
   }
 
   private calcCoordInDeg(): void {

@@ -1,4 +1,4 @@
-<h2>e-control api Beispiel</h2>
+<h3>e-control api Beispiel</h3>
 
 <form [formGroup]="form" #myForm="ngForm" (ngSubmit)="searchAddressAndGasStations()">
   <mat-form-field class="address">
@@ -28,7 +28,7 @@
 </form>
 
 <div *ngIf="coordinates && (!noData)">
-  <h3>Ergebnisse:</h3>
+  <h4>Ergebnisse:</h4>
   <p>Preise werden von e-control nur in den ersten 5 Tankstellen bereitgestellt, damit Tankstellen keine Preisermittlungen durchführen können!</p>
   <p>Nach Auswahl einer Tankstelle werden die Detaildaten im JSON-Format unterhalb der Tabelle angezeigt.</p>
   <mat-form-field class="filter">

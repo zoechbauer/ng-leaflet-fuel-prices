@@ -83,6 +83,7 @@ export class EControlExampleComponent implements OnInit {
 
     this.geocodingService.geocodeAddress(this.address).subscribe((response) => {
       console.log('geocodeAddress', response);
+      response.length === 0 ? this.noData = true : this.noData = false;
 
       if (response.length > 0) {
         this.coordinates = {

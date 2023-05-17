@@ -1,4 +1,4 @@
-<h2>Koordination aus Adresse ermitteln</h2>
+<h3>Koordinaten aus Adresse ermitteln</h3>
 
 <form [formGroup]="form" #myForm="ngForm" (ngSubmit)="searchAddress()">
   <mat-form-field class="address">
@@ -10,14 +10,19 @@
       placeholder="Geben Sie Adresse ein..."
     />
   </mat-form-field>
-  <button mat-button color="primary" type="submit" [disabled]="myForm.invalid">Suchen</button>
+  <button mat-button color="primary" type="submit" [disabled]="myForm.invalid">
+    Suchen
+  </button>
+
+  <div *ngIf="!noData() && search">
+    <p>Ergebnis</p>
+    <ul>
+      <li>Gefundender Ort: {{displayName}}</li>
+      <li>Breitengrad: {{ coordinates.lat }} -> {{ latDeg }}</li>
+      <li>Längengrad: {{ coordinates.lng }} -> {{ lngDeg }}</li>
+    </ul>
+  </div>
+  <div *ngIf="noData() && search">
+    Es wurden zu dieser Adresse keine Tankstellen gefunden!
+  </div>
 </form>
-
-<div *ngIf="coordinates">
-  <p>Koordinaten</p>
-  <ul>
-    <li>Breitengrad: {{ coordinates.lat }} -> {{latDeg}}</li>
-    <li>Längengrad: {{ coordinates.lng }} -> {{lngDeg}}</li>
-  </ul>
-</div>
-
