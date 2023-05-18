@@ -1,11 +1,19 @@
 <div class="container">
   <mat-card>
     <mat-card-header>
-      <h3>Leaflet Beispiel: Adresse als Marker in Map setzen</h3>
+      <h3>Leaflet Beispiel: Adressen als Marker in Map setzen</h3>
+
     </mat-card-header>
     <mat-card-content>
+      <p>Die Map wird auf die Start Adresse zentriert. Es können weitere Adressen zur Map hinzugefügt werden.</p>
       <form #myForm="ngForm" (ngSubmit)="searchAddressAndSetMarker()">
-        <mat-form-field appearance="fill" style="width: 50%;">
+
+        <mat-radio-group [(ngModel)]="selectedAddressType" name="addressType">
+          <mat-radio-button value="startAddress">Start Adresse</mat-radio-button>
+          <mat-radio-button value="additionalAddress">Weitere Adressen</mat-radio-button>
+        </mat-radio-group>
+
+        <mat-form-field appearance="fill" class="address margin-left">
           <mat-label>Adresse</mat-label>
           <input
             matInput
@@ -15,8 +23,9 @@
             required
           />
         </mat-form-field>
-        <button mat-button color="primary" type="submit" [disabled]="myForm.invalid" style="margin-left: 20px;">
-          Suchen
+
+        <button mat-button color="primary" type="submit" [disabled]="myForm.invalid || (!validateStartAddress())" class="margin-left">
+          Marker setzen
         </button>
         <div *ngIf="coord">
           Breitengrad: {{coord.lat}} Längengrad: {{coord.lng}}
