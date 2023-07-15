@@ -1,50 +1,42 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  marker,
-  icon,
-  latLng,
-  Map,
-  MapOptions,
-  tileLayer,
-  Marker,
-  LatLngLiteral,
-} from 'leaflet';
+import { OnInit, AfterViewInit, Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { LeafletService } from '../services/leaflet.service';
+import * as L from 'leaflet';
 
-enum AddressType  {
-  startAddress = "startAddress",
-  additionalAddress = "additionalAddress"
-}
+import { LeafletService } from '../services/leaflet.service';
+import { AddressType } from '../model/address-type';
 
 @Component({
   selector: 'app-leaflet-example',
   templateUrl: './leaflet-example.component.html',
   styleUrls: ['./leaflet-example.component.scss'],
 })
-export class LeafletExampleComponent implements OnInit {
+export class LeafletExampleComponent implements OnInit, AfterViewInit {
+  private map!: L.Map;
+  layers: L.Marker<any>[] = [];
+  options!: L.MapOptions;
+  coord!: L.LatLngLiteral;
+  startAdressCoord!: L.LatLngLiteral;
+  additionalAdressCoords: L.LatLngLiteral[] = [];
   zoom!: number;
   maxZoom!: number;
-  private map!: Map;
-  coord!: LatLngLiteral;
-  selectedAddressType: AddressType = AddressType.startAddress;
-  startAdressCoord!: LatLngLiteral;
-  additionalAdressCoords: LatLngLiteral[] = [];
+
+  selectedAddressType!: AddressType;
   address!: string;
-  layers: Marker<any>[] = [];
-  options!: MapOptions;
 
   constructor(
     private http: HttpClient,
     private leafletService: LeafletService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.selectedAddressType = AddressType.startAddress;
     this.setZoomLevel();
+  }
 
+  ngAfterViewInit(): void {
     this.options = {
       layers: [
-        tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           maxZoom: this.maxZoom,
           attribution: '&copy; OpenStreetMap',
         }),
@@ -55,25 +47,25 @@ export class LeafletExampleComponent implements OnInit {
 
   searchAddressAndSetMarker(): void {
     this.leafletService.getLatLngByAddress(this.address)
-      .subscribe((coord: LatLngLiteral) => {
+      .subscribe((coord: L.LatLngLiteral) => {
         this.setCoord(coord);
         this.centerMap();
-        this.setLayer();
+        this.setLayerWithMarker();
       });
   }
 
   validateStartAddress(): boolean {
-    if (this.selectedAddressType === AddressType.startAddress) {
+    if (this.isStartAddress) {
       return true;
     } else {
       return this.startAdressCoord && !(this.startAdressCoord?.lat === 0 && this.startAdressCoord?.lng === 0);
     }
   }
 
-  private setCoord(coord: LatLngLiteral) {
+  private setCoord(coord: L.LatLngLiteral) {
     this.coord = coord;
 
-    if (this.selectedAddressType === AddressType.startAddress) {
+    if (this.isStartAddress) {
       this.startAdressCoord = coord;
       this.additionalAdressCoords = [];
     } else {
@@ -82,28 +74,74 @@ export class LeafletExampleComponent implements OnInit {
   }
 
   private centerMap() {
-    const coord: LatLngLiteral = this.startAdressCoord;
+    const coord: L.LatLngLiteral = this.startAdressCoord;
 
-    this.options.center = latLng(coord.lat, coord.lng);
+    this.options.center = L.latLng(coord.lat, coord.lng);
     this.options.zoom = this.zoom;
     if (this.map) {
       this.map.setView([coord.lat, coord.lng], this.zoom);
     }
   }
 
-  private setLayer() {
-    if (this.selectedAddressType === AddressType.startAddress) {
+  private setLayerWithMarker() {
+    if (this.isStartAddress) {
       this.layers = [];
     }
 
-    this.layers.push(marker([this.coord.lat, this.coord.lng], {
-      icon: icon({
-        iconSize: [25, 41],
+    const marker: L.Marker = L.marker([this.coord.lat, this.coord.lng], {
+      icon: L.icon({
+        iconSize: this.isStartAddress ? [25*1.3, 41*1.3] : [25, 41] ,
         iconAnchor: [13, 41],
-        iconUrl: 'assets/marker-icon.png',
-        shadowUrl: 'assets/marker-shadow.png',
+        iconUrl: this.isStartAddress ? 'assets/marker-icon-2x.png' : 'assets/marker-icon.png',
+        shadowUrl: 'assets/marker-shadow.png'
       }),
-    }));
+      opacity: 0.5
+    })
+    .bindTooltip(this.getTooltipText())
+    .bindPopup(this.getPopupText());
+
+    this.layers.push(marker);
+  }
+
+  private get isStartAddress(): boolean {
+    return this.selectedAddressType === AddressType.startAddress;
+  }
+
+  private getTooltipText(): string {
+    const styleBold = 'style="font-weight: bold;"';
+
+    let styleColor = 'style="color: black;"';
+    if (this.isStartAddress) {
+      styleColor = 'style="color: red;"'
+    }
+    return `<div ${styleBold}>${this.address}</div><div ${styleColor}>${this.selectedAddressType.toString()}</div>`;
+  }
+
+  private getPopupText(): string {
+    const table =
+    `<table>
+      <tr>
+        <th colspan="2">Detailinformationen</th>
+      </tr>
+      <tr>
+        <td>Typ</td>
+        <td>${this.selectedAddressType}</td>
+      </tr>
+      <tr>
+        <td>Adresse</td>
+        <td>${this.address}</td>
+      </tr>
+      <tr>
+        <td>Breitengrad</td>
+        <td>${this.coord.lat}</td>
+      </tr>
+      <tr>
+        <td>Längengrad</td>
+        <td>${this.coord.lng}</td>
+      </tr>
+    </table>`
+
+    return table;
   }
 
   private setZoomLevel() {
@@ -111,7 +149,7 @@ export class LeafletExampleComponent implements OnInit {
     this.zoom = 12;
   }
 
-  onMapReady(map: Map): void {
+  onMapReady(map: L.Map): void {
     console.log('onMapReady ', map);
     this.map = map;
   }

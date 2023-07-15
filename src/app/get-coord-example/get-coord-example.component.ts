@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { LatLngLiteral } from 'leaflet';
+import * as L from 'leaflet';
 
 import { GeocodingService } from '../services/geocoding.service';
 
@@ -14,7 +14,7 @@ export class GetCoordExampleComponent implements OnInit{
   form!: FormGroup;
   search: boolean = false;
   displayName: string = "";
-  coordinates!: LatLngLiteral;
+  coordinates!: L.LatLngLiteral;
   latDeg: string = "";
   lngDeg: string = "";
 
@@ -59,6 +59,8 @@ export class GetCoordExampleComponent implements OnInit{
       lng: 0
     };
   }
+
+  // TODO convertCoordToDegrees  -> GeocodingService
 
   private calcCoordInDeg(): void {
     this.calcCoordDeg(this.coordinates.lat, true);

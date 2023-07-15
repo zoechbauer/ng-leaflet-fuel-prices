@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
+import { IFuel } from '../model/ifuel';
+import { IGasStation } from '../model/igas-station';
 
 @Injectable({
   providedIn: 'root',
@@ -23,14 +25,22 @@ export class EControlService {
       fuelType: fuelType,
       includeClosed: includeClosed.toString(),
     };
-    return this.http.get<any>(this.apiUrl, { params: params }).pipe(
+    return this.http.get<IGasStation[]>(this.apiUrl, { params: params }).pipe(
       tap((_) => console.log()),
-      map((stations) =>
-        stations.map((obj: any) => ({
-          ...obj,
-          name: obj.name.toUpperCase(),
+      map((stations: IGasStation[]) =>
+        stations.map((gasStation: IGasStation) => ({
+          ...gasStation,
+          name: gasStation.name.toUpperCase(),
         }))
       )
     );
+  }
+
+  fillFuelArr(): IFuel[] {
+    return [
+      { displayValue: 'Diesel', value: 'DIE' },
+      { displayValue: 'Super', value: 'SUP' },
+      { displayValue: 'Gas', value: 'GAS' },
+    ];
   }
 }

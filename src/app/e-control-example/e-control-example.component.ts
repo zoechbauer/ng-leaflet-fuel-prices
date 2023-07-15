@@ -12,11 +12,7 @@ import { EControlService } from '../services/e-control.service';
 import { IGasStation } from '../model/igas-station';
 import { GeocodingService } from '../services/geocoding.service';
 import { LatLngLiteral } from 'leaflet';
-
-interface Fuel {
-  value: string;
-  displayValue: string;
-}
+import { IFuel } from '../model/ifuel';
 
 @Component({
   selector: 'app-e-control-example',
@@ -37,7 +33,7 @@ export class EControlExampleComponent implements OnInit {
   address!: string;
   includeClosedStations: boolean = false;
   selectedFuelType!: string;
-  fuels: Fuel[] = [];
+  fuels: IFuel[] = [];
   form!: FormGroup;
   noData: boolean = false;
 

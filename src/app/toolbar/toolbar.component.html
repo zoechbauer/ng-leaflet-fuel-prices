@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <span>Tankstellenpreise und Maps</span>
+    <span>Tankstellenpreise lt. e-control API</span>
     <span style="margin-left: 30%">Einige Beispiele mit Leaflets</span>
     <span class="column-spacer"></span>
     <button mat-icon-button title="Hilfe & Erklärungen">
@@ -14,15 +14,9 @@
     </button>
     <span class="column-spacer"></span>
     <div>
-      <a matLine routerLink="leaflet" routerLinkActive="active-link"
-        >Orte auf Karte markieren</a
-      >
-      <a matLine routerLink="e-control" routerLinkActive="active-link"
-        >e-control api Beispiel</a
-      >
-      <a matLine routerLink="geocoding" routerLinkActive="active-link"
-        >Geocding Beispiel</a
-      >
+      <a routerLink="fuel-prices-map" routerLinkActive="active-link">
+        Tankstellenpreise in Map anzeigen
+      </a>
     </div>
   </mat-toolbar-row>
 </mat-toolbar>

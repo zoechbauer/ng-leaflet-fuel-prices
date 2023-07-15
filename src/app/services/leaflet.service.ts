@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LatLngLiteral } from 'leaflet';
+import * as L from 'leaflet';
 import { Observable, catchError, map, tap } from 'rxjs';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class LeafletService {
 
   constructor(private http: HttpClient) {}
 
-  getLatLngByAddress(address: string): Observable<LatLngLiteral> {
+  getLatLngByAddress(address: string): Observable<L.LatLngLiteral> {
     return this.http
       .get<any[]>(this.SEARCH_URL, {
         params: {

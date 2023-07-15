@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-// import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
@@ -15,6 +15,7 @@ import { SidenavComponent } from './sidenav/sidenav.component';
 import { LeafletExampleComponent } from './leaflet-example/leaflet-example.component';
 import { EControlExampleComponent } from './e-control-example/e-control-example.component';
 import { GetCoordExampleComponent } from './get-coord-example/get-coord-example.component';
+import { FuelPricesMapComponent } from './fuel-prices-map/fuel-prices-map.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { GetCoordExampleComponent } from './get-coord-example/get-coord-example.
     SidenavComponent,
     LeafletExampleComponent,
     EControlExampleComponent,
-    GetCoordExampleComponent
+    GetCoordExampleComponent,
+    FuelPricesMapComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +33,7 @@ import { GetCoordExampleComponent } from './get-coord-example/get-coord-example.
     ReactiveFormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    // FlexLayoutModule,
+    FlexLayoutModule,
     LeafletModule,
     MaterialModule,
     HttpClientModule

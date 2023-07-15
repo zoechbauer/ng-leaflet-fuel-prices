@@ -1,27 +1,26 @@
 <mat-sidenav-container class="app-sidenav-container">
   <mat-sidenav #sidenav class="app-sidenav mat-elevation-z10" [mode]="'over'">
-      <mat-toolbar color="primary">
-          Alle Programme
-      </mat-toolbar>
-      <mat-nav-list>
-          <a routerLink="leaflet" routerLinkActive="active-link">
-              <mat-icon>place</mat-icon>Orte auf Karte markieren
-          </a>
-          <a routerLink="e-control" routerLinkActive="active-link">
-            <mat-icon>rss_feed</mat-icon>e-control API Beispiel
-          </a>
-          <a routerLink="geocoding" routerLinkActive="active-link">
-            <mat-icon>add_location</mat-icon>Geocding Beispiel
-          </a>
-      </mat-nav-list>
+    <mat-toolbar color="primary"> Alle Programme </mat-toolbar>
+    <mat-nav-list fxLayout="column">
+      <a routerLink="geocoding" routerLinkActive="active-link">
+        <mat-icon>add_location</mat-icon>Geocding Beispiel
+      </a>
+      <a routerLink="leaflet" routerLinkActive="active-link">
+        <mat-icon>add_location</mat-icon>Orte auf Karte markieren
+      </a>
+      <a routerLink="e-control" routerLinkActive="active-link">
+        <mat-icon>directions_car</mat-icon>e-control API Beispiel
+      </a>
+      <a routerLink="fuel-prices-map" routerLinkActive="active-link">
+        <mat-icon>place</mat-icon>Tankstellenpreise in Map
+      </a>
+    </mat-nav-list>
   </mat-sidenav>
 
   <div class="app-sidenav-content">
-      <app-toolbar (toggleSidenav)="sidenav.toggle()"></app-toolbar>
-      <div class="wrapper">
-          <router-outlet></router-outlet>
-      </div>
+    <app-toolbar (toggleSidenav)="sidenav.toggle()"></app-toolbar>
+    <div class="wrapper">
+      <router-outlet></router-outlet>
+    </div>
   </div>
-
 </mat-sidenav-container>
-

@@ -1,0 +1,51 @@
+<div class="container">
+  <form
+    [formGroup]="form"
+    #myForm="ngForm"
+    (ngSubmit)="searchAddressAndGasStations()"
+  >
+    <mat-form-field class="address">
+      <mat-label>Adresse</mat-label>
+      <input
+        matInput
+        formControlName="address"
+        placeholder="Geben Sie Adresse ein..."
+        value=""
+      />
+    </mat-form-field>
+
+    <mat-checkbox formControlName="includeClosedStations" class="margin-left"
+      >auch geschlossene Tankstellen</mat-checkbox
+    >
+
+    <mat-form-field class="margin-left">
+      <mat-label>Treibstoff</mat-label>
+      <mat-select formControlName="selectedFuelType">
+        <mat-option *ngFor="let fuel of fuels" [value]="fuel.value">
+          {{ fuel.displayValue }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button
+      mat-button
+      color="primary"
+      type="submit"
+      [disabled]="myForm.invalid"
+      class="margin-left"
+    >
+      Suchen
+    </button>
+  </form>
+
+  <div
+    *ngIf="coord && !noData"
+    leaflet
+    style="height: 680px"
+    [leafletOptions]="options"
+    [leafletLayers]="layers"
+    (leafletMapReady)="onMapReady($event)"
+    #mapElement
+  ></div>
+  <div *ngIf="noData">Es wurden zu dieser Adresse keine Tankstellen gefunden!</div>
+</div>
