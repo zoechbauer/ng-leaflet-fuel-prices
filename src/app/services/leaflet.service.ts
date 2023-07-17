@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import * as L from 'leaflet';
 import { Observable, catchError, map, tap } from 'rxjs';
+import * as L from 'leaflet';
 
 @Injectable({
   providedIn: 'root',

@@ -6,7 +6,6 @@ import { LeafletService } from '../services/leaflet.service';
 import { EControlService } from '../services/e-control.service';
 import { IGasStation } from '../model/igas-station';
 import { GeocodingService } from '../services/geocoding.service';
-import { LatLngLiteral } from 'leaflet';
 import { AddressType } from '../model/address-type';
 import { IFuel } from '../model/ifuel';
 import { IFuelInfo } from '../model/ifuel-info';
@@ -182,7 +181,7 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private setLayerWithMarker(isSearchAddress: boolean) {
+  private setLayerWithMarker(isSearchAddress: boolean): void {
     if (isSearchAddress) {
       this.layers = [];
     }

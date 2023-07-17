@@ -16,6 +16,7 @@ import { LeafletExampleComponent } from './leaflet-example/leaflet-example.compo
 import { EControlExampleComponent } from './e-control-example/e-control-example.component';
 import { GetCoordExampleComponent } from './get-coord-example/get-coord-example.component';
 import { FuelPricesMapComponent } from './fuel-prices-map/fuel-prices-map.component';
+import { FileDialogContentComponent } from './file-dialog-content/file-dialog-content.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { FuelPricesMapComponent } from './fuel-prices-map/fuel-prices-map.compon
     LeafletExampleComponent,
     EControlExampleComponent,
     GetCoordExampleComponent,
-    FuelPricesMapComponent
+    FuelPricesMapComponent,
+    FileDialogContentComponent
   ],
   imports: [
     BrowserModule,

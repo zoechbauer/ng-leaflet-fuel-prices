@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
+import { FileReaderService } from '../services/file-reader.service';
+
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',
@@ -8,8 +10,19 @@ import { Component, EventEmitter, Output } from '@angular/core';
 export class ToolbarComponent {
   @Output() toggleSidenav = new EventEmitter<void>();
 
+  constructor(private fileReader: FileReaderService) {}
+
   onMenuClicked () {
     this.toggleSidenav.emit();
+  }
+
+  showTodos() {
+    this.fileReader.readTodos().subscribe(todos => {
+      console.log(todos);
+      this.fileReader.showTodosInDialog();
+    });
+
+
   }
 
 }

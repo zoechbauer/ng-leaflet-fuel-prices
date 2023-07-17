@@ -1,0 +1,6 @@
+Status    Aktivität
+-------------------------------------------------------------------------------------
+erledigt  TODO-Liste als Dialog anzeigen
+offen     Refactoring FuelPricesMapComponent -> leaflet Funktionen in Klasse auslagern
+offen     neuen circleMarker mit Radius des Spritpreis Rankings
+offen     Radio Buttons für Auswahl Markertyp (normal oder circle)
