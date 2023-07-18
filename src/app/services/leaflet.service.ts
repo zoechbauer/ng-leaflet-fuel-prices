@@ -85,7 +85,7 @@ export class LeafletService {
         : this.popupTooltipService.getTooltipText(fuelInfo))
       .bindPopup(
         isSearchAddress
-          ? this.popupTooltipService.getPopupTextForSearchAddress(coord, fuelInfo)
+          ? this.popupTooltipService.getPopupTextForSearchAddress(coord, address)
           : this.popupTooltipService.getPopupTextForGasStation(coord, fuelInfo)
       );
 

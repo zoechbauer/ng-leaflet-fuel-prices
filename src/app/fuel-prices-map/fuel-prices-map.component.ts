@@ -175,23 +175,6 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
     this.layers = this.leafletService.setLayerWithMarker(isSearchAddress, this.address, this.fuelInfo, this.layers, coord);
   }
 
-  // TODO sort and ranking
-  private getTooltipTextForSearchAddress(searchAddress: string): string {
-    return this.popupTooltipService.getTooltipTextForSearchAddress(searchAddress);
-  }
-
-  private getTooltipText(fuelInfo: IFuelInfo): string {
-    return this.popupTooltipService.getTooltipText(fuelInfo);
-  }
-
-  private getPopupTextForGasStation(coord: L.LatLngLiteral, fuelInfo: IFuelInfo): string {
-    return this.popupTooltipService.getPopupTextForGasStation(coord, fuelInfo);
-  }
-
-  private getPopupTextForSearchAddress(coord: L.LatLngLiteral, fuelInfo: IFuelInfo): string {
-    return this.popupTooltipService.getPopupTextForSearchAddress(coord, fuelInfo);
-  }
-
   private setZoomLevel() {
     this.maxZoom = 18;
     this.zoom = 12;

@@ -60,22 +60,14 @@ export class PopupTooltipService {
     return table;
   }
 
-  getPopupTextForSearchAddress(coord: L.LatLngLiteral, fuelInfo: IFuelInfo): string {
+  getPopupTextForSearchAddress(coord: L.LatLngLiteral, searchAddress: string): string {
     const table = `<table>
       <tr>
-        <th colspan="2">Gesuchte Adresse</th>
+        <th colspan="2">Tankstellen werden gesucht für:</th>
       </tr>
       <tr>
-        <td>Typ</td>
-        <td>${fuelInfo.addressType}</td>
-      </tr>
-      <tr>
-        <td>Ort</td>
-        <td>${fuelInfo.city}</td>
-      </tr>
-      <tr>
-        <td>Strasse</td>
-        <td>${fuelInfo.address}</td>
+        <td>Adresse</td>
+        <td>${searchAddress}</td>
       </tr>
       <tr>
         <td>Breitengrad</td>
