@@ -17,12 +17,11 @@ export class ToolbarComponent {
   }
 
   showTodos() {
-    this.fileReader.readTodos().subscribe(todos => {
-      console.log(todos);
-      this.fileReader.showTodosInDialog();
-    });
+    this.fileReader.showTodosInDialog();
+  }
 
-
+  showHelp() {
+    this.fileReader.showHelpInDialog();
   }
 
 }

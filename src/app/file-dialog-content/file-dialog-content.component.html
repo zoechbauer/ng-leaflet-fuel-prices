@@ -1,5 +1,10 @@
-<div class="todo-list">
-  <h3>TODO Liste</h3>
-  <pre>{{ data.fileContent }}</pre>
+<div class="dialog">
+  <h3>{{ data.title}}</h3>
+  <div *ngIf="!data.isHtmlText">
+    <pre>{{ data.fileContent }}</pre>
+  </div>
+  <div *ngIf="data.isHtmlText">
+    <div [innerHTML]="data.fileContent"></div>
+  </div>
   <button mat-button [mat-dialog-close]="true">Schließen</button>
 </div>
