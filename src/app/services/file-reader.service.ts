@@ -39,9 +39,9 @@ export class FileReaderService {
         fileContent: data,
         isHtmlText: isHtmlText
       }
-      this.dialog.open(FileDialogContentComponent, {
+      let dialogRef = this.dialog.open(FileDialogContentComponent, {
         data: dlgData
-      })
+      });
     })
   }
 

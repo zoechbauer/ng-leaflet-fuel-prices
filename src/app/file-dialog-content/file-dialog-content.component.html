@@ -1,10 +1,16 @@
 <div class="dialog">
-  <h3>{{ data.title}}</h3>
-  <div *ngIf="!data.isHtmlText">
-    <pre>{{ data.fileContent }}</pre>
-  </div>
-  <div *ngIf="data.isHtmlText">
-    <div [innerHTML]="data.fileContent"></div>
-  </div>
-  <button mat-button [mat-dialog-close]="true">Schließen</button>
+  <h3 mat-dialog-title>{{ data.title }}</h3>
+  <mat-dialog-content>
+    <div *ngIf="!data.isHtmlText">
+      <pre>{{ data.fileContent }}</pre>
+    </div>
+    <div *ngIf="data.isHtmlText">
+      <div [innerHTML]="data.fileContent"></div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button color="primary" [mat-dialog-close]="true">
+      Schließen
+    </button>
+  </mat-dialog-actions>
 </div>
