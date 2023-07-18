@@ -1,6 +1,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
+import { filter, from, map } from 'rxjs';
 
 import { LeafletService } from '../services/leaflet.service';
 import { EControlService } from '../services/e-control.service';
@@ -26,7 +27,7 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
   gasStations!: IGasStation[];
 
   private map!: L.Map;
-  layers: L.Marker<any>[] = [];
+  layers: L.Layer[] = [];
   options!: L.MapOptions;
   coord!: L.LatLngLiteral;
   searchAdressCoord!: L.LatLngLiteral;
@@ -34,6 +35,7 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
   maxZoom!: number;
   selectedAddressType!: AddressType;
   fuelInfo!: IFuelInfo;
+  priceRankingMap!: Map<number, number>
 
   constructor(
     private fb: FormBuilder,
@@ -78,10 +80,13 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
       response.length === 0 ? (this.noData = true) : (this.noData = false);
 
       if (response.length > 0) {
+        const data = response[0];
         this.searchAdressCoord = {
-          lat: response[0].lat,
-          lng: response[0].lon,
+          lat: data.lat,
+          lng: data.lon,
         };
+        this.address = data.display_name;
+
         this.searchGasStations();
       }
     });
@@ -102,10 +107,26 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
 
         if (!this.noData) {
           this.gasStations = response;
+          this.createPriceRanking();
           this.setSearchAddressMarker();
           this.setGasStationsMarker();
         }
       });
+  }
+
+  private createPriceRanking() {
+    this.priceRankingMap = new Map<number, number>();
+    let i = 1;
+
+    from(this.gasStations).pipe(
+      map(gs => gs.prices),
+      filter(prices => prices.length > 0),
+      map(prices => prices[0]),
+      map(priceObj => priceObj["amount"])
+    ).subscribe(price => {
+      this.priceRankingMap.set(+price, i++)
+    });
+    console.log('priceRankingMap',this.priceRankingMap);
   }
 
   setSearchAddressMarker(): void {
@@ -116,8 +137,6 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
 
   setGasStationsMarker(): void {
     this.gasStations.forEach((gasStation) => {
-      console.log('gasStation', gasStation);
-
       this.setCoordForGasStation(gasStation);
       this.setFuelInfos(false, gasStation);
       this.setLayerWithMarker(false);
@@ -140,20 +159,12 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
     let amount = "unbekannt";
     let fuelType = "unbekannt";
     const pricesArr = gasStation?.prices  ? gasStation?.prices : [];
-    console.log('pricesArr', pricesArr);
     if (pricesArr.length > 0) {
       amount = pricesArr[0].amount;
       fuelType = pricesArr[0].label;
     }
 
-    if (isSearchAddress) {
-      this.fuelInfo = {
-        name: `${gasStation?.name}`,
-        city: `${gasStation?.location.postalCode}  ${gasStation?.location.city}` ,
-        address: `${gasStation?.location.address}`,
-        addressType: 'Suchadresse',
-      };
-    } else {
+    if (!isSearchAddress) {
       this.fuelInfo = {
         name: `${gasStation?.name}`,
         city: `${gasStation?.location.postalCode}  ${gasStation?.location.city}` ,
@@ -172,7 +183,7 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
 
   private setLayerWithMarker(isSearchAddress: boolean): void {
     const coord = isSearchAddress ? this.searchAdressCoord : this.coord;
-    this.layers = this.leafletService.setLayerWithMarker(isSearchAddress, this.address, this.fuelInfo, this.layers, coord);
+    this.layers = this.leafletService.setLayerWithMarker(isSearchAddress, this.address, this.fuelInfo, this.layers, coord, this.priceRankingMap);
   }
 
   private setZoomLevel() {
@@ -181,7 +192,6 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
   }
 
   onMapReady(map: L.Map): void {
-    console.log('onMapReady ', map);
     this.map = map;
   }
 }

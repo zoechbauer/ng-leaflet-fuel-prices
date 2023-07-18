@@ -1,6 +1,6 @@
 <h4>Funktionen</h4>
 <ul>
-  <li>Aufrufen der Programme aus dem Menü</br>Ausserhalb des Menüs klicken damit es geschlossen wird.</li>
+  <li>Aufrufen der Programme aus dem Menü</br>Durch Klick außerhalb des Menüs wird Menü wieder geschlossen.</li>
   <li>TODO-Liste</li>
   <li>Hilfe & Erklärungen</li>
 </ul>
@@ -21,9 +21,10 @@
 <h4>e-control API Beispiel</h4>
 <p>Adresse erfassen zu denen die Tankstellenpreise gesucht werden sollen.
 Es muss die Treibstoffart ausgewählt werden, optional können auch geschlossene Tankstellen angezeigt werden. Danach Suchen Button klicken.</p>
-<p>Es werden die Tankstellen mit den Spritpreisen in einer Tabelle angezeigt. Die Tabelle kann sortiert und gefiltert werden</p>
+<p>Es werden die Tankstellen mit den Spritpreisen in einer Tabelle angezeigt. Die Tabelle kann sortiert und gefiltert werden.</p>
 <p>Wird eine Tabellenzeile markiert, werden alle Detaildaten im JSON Format unterhalb der Tabelle angezeigt.</p>
 <h4>Tankstellenpreise in Map</h4>
-<p>Datenerfassun wie bei vorigem e-control API Beispiel</p>
+<p>Datenerfassun wie bei vorigem e-control API Beispiel,</p>
 <p>Der Suchort und die gefundenen Tankstellen werden in der Map als Marker gesetzt.</p>
+<p>Der Suchort ist um 50% größer als die Marker für Tankstellen ohne Preise und die Tankstellen mit Preis werden in der Map als Kreis-Marker gesetzt, wobei der Kreis umso größer ist je kleiner der Spritpreis ist.</p>
 <p>Mittels Mouse over und Klick auf Marker werden Informationen angezeigt.</p>

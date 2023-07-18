@@ -11,7 +11,10 @@ import { PopupTooltipService } from './popup-tooltip.service';
 export class LeafletService {
   private SEARCH_URL = 'https://nominatim.openstreetmap.org/search';
 
-  constructor(private http: HttpClient, private popupTooltipService: PopupTooltipService) {}
+  constructor(
+    private http: HttpClient,
+    private popupTooltipService: PopupTooltipService
+  ) {}
 
   getLatLngByAddress(address: string): Observable<L.LatLngLiteral> {
     return this.http
@@ -39,7 +42,11 @@ export class LeafletService {
       );
   }
 
-  initMapOptions(options: L.MapOptions, zoom: number, maxZoom: number): L.MapOptions {
+  initMapOptions(
+    options: L.MapOptions,
+    zoom: number,
+    maxZoom: number
+  ): L.MapOptions {
     options = {
       layers: [
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -51,7 +58,12 @@ export class LeafletService {
     };
     return options;
   }
-  centerMap(map: L.Map, options: L.MapOptions, coord: L.LatLngLiteral, zoom: number) {
+  centerMap(
+    map: L.Map,
+    options: L.MapOptions,
+    coord: L.LatLngLiteral,
+    zoom: number
+  ) {
     options.center = L.latLng(coord.lat, coord.lng);
     options.zoom = zoom;
     if (map) {
@@ -59,38 +71,96 @@ export class LeafletService {
     }
   }
 
-  setLayerWithMarker(isSearchAddress: boolean,
-                    address: string,
-                    fuelInfo: IFuelInfo,
-                    layers: L.Marker<any>[],
-                    coord: L.LatLngLiteral): L.Marker<any>[] {
+  setLayerWithMarker(
+    isSearchAddress: boolean,
+    address: string,
+    fuelInfo: IFuelInfo,
+    layers: L.Layer[],
+    coord: L.LatLngLiteral,
+    priceRankingMap: Map<number, number>
+  ): L.Layer[] {
     if (isSearchAddress) {
       layers = [];
     }
 
-    const marker: L.Marker = L.marker([coord.lat, coord.lng], {
-      icon: L.icon({
-        iconSize: isSearchAddress ? [25 * 0.5, 41 * 0.5] : [25, 41],
-        iconAnchor: [13, 41],
-        iconUrl: isSearchAddress
-          ? 'assets/marker-icon.png'
-          : 'assets/marker-icon.png', // TODO use other icon for SearchAddress
-        shadowUrl: 'assets/marker-shadow.png',
-      }),
-      opacity: 0.5,
-    })
+    const rankingSum = this.getRankingSum(priceRankingMap);
+    let marker: L.Marker<any> | L.CircleMarker;
+
+    if (fuelInfo && fuelInfo.price !== 'unbekannt') {
+      marker = this.setCircleMarker(coord, fuelInfo.price, priceRankingMap, rankingSum);
+    } else {
+      marker = this.setMarker(coord, isSearchAddress);
+    }
+
+    marker
       .bindTooltip(
         isSearchAddress
-        ? this.popupTooltipService.getTooltipTextForSearchAddress(address)
-        : this.popupTooltipService.getTooltipText(fuelInfo))
+          ? this.popupTooltipService.getTooltipTextForSearchAddress(address)
+          : this.popupTooltipService.getTooltipText(fuelInfo)
+      )
       .bindPopup(
         isSearchAddress
-          ? this.popupTooltipService.getPopupTextForSearchAddress(coord, address)
+          ? this.popupTooltipService.getPopupTextForSearchAddress(
+              coord,
+              address
+            )
           : this.popupTooltipService.getPopupTextForGasStation(coord, fuelInfo)
       );
 
     layers.push(marker);
+
     return layers;
   }
 
+  private setMarker(
+    coord: L.LatLngLiteral,
+    isSearchAddress: boolean
+  ): L.Marker {
+    const marker = L.marker([coord.lat, coord.lng], {
+      icon: L.icon({
+        iconSize: isSearchAddress ? [25 * 1.5, 41 * 1.5] : [25, 41],
+        iconAnchor: [13, 41],
+        iconUrl: 'assets/marker-icon.png',
+        shadowUrl: 'assets/marker-shadow.png',
+      }),
+      opacity: 0.5,
+    });
+    return marker;
+  }
+
+  private setCircleMarker(
+    coord: L.LatLngLiteral,
+    price: string | undefined,
+    priceRankingMap: Map<number, number>,
+    rankingSum: number
+  ): L.CircleMarker {
+
+    const circleMarker = L.circleMarker([coord.lat, coord.lng], {
+      radius: this.calcCircleRadius(price, priceRankingMap, rankingSum),
+      opacity: 0.5,
+    });
+    return circleMarker;
+  }
+
+  private calcCircleRadius(
+    price: string | undefined,
+    priceRankingMap: Map<number, number>,
+    rankingSum: number
+  ): number {
+
+    const priceVal = price ? +price : 0;
+    const ranking = priceRankingMap.get(priceVal);
+    const radius = (ranking ? rankingSum * 3 - ranking * 3 : 0);
+    console.log('Circle radius', radius);
+
+    return radius;
+  }
+
+  private getRankingSum(priceRankingMap: Map<number, number>): number {
+    let sum = 0;
+    priceRankingMap.forEach((value) => {
+      sum += value;
+    });
+    return sum;
+  }
 }

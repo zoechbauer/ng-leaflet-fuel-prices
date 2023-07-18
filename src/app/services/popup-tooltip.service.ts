@@ -12,7 +12,7 @@ export class PopupTooltipService {
   getTooltipTextForSearchAddress(searchAddress: string): string {
     const styleBold = 'style="font-weight: bold;"';
     const styleColor = 'style="color: red;"';
-    const titel = "Suchadresse";
+    const titel = "Ermittelte Adresse aus Suchadresse";
     return `<div ${styleBold}>${titel}</div><div ${styleColor}>${searchAddress}</div>`;
   }
 
