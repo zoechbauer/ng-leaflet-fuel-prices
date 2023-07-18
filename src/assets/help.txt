@@ -25,5 +25,5 @@ Es muss die Treibstoffart ausgewählt werden, optional können auch geschlossene
 <p>Wird eine Tabellenzeile markiert, werden alle Detaildaten im JSON Format unterhalb der Tabelle angezeigt.</p>
 <h4>Tankstellenpreise in Map</h4>
 <p>Datenerfassun wie bei vorigem e-control API Beispiel</p>
-<p>Die Tankstellen werden in der Map als Marker gesetzt.</p>
+<p>Der Suchort und die gefundenen Tankstellen werden in der Map als Marker gesetzt.</p>
 <p>Mittels Mouse over und Klick auf Marker werden Informationen angezeigt.</p>

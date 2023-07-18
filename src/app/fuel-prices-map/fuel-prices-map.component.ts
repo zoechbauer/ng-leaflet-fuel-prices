@@ -9,6 +9,7 @@ import { GeocodingService } from '../services/geocoding.service';
 import { AddressType } from '../model/address-type';
 import { IFuel } from '../model/ifuel';
 import { IFuelInfo } from '../model/ifuel-info';
+import { PopupTooltipService } from '../services/popup-tooltip.service';
 
 @Component({
   selector: 'app-fuel-prices-map',
@@ -38,7 +39,8 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
     private fb: FormBuilder,
     private eControlService: EControlService,
     private geocodingService: GeocodingService,
-    private leafletService: LeafletService
+    private leafletService: LeafletService,
+    private popupTooltipService: PopupTooltipService
   ) {}
 
   ngOnInit(): void {
@@ -49,15 +51,7 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.options = {
-      layers: [
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: this.maxZoom,
-          attribution: '&copy; OpenStreetMap',
-        }),
-      ],
-      zoom: this.zoom,
-    };
+    this.options = this.leafletService.initMapOptions(this.options, this.zoom, this.maxZoom);
   }
 
   createForm(): void {
@@ -173,123 +167,29 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
 
   private centerMap() {
     const coord: L.LatLngLiteral = this.searchAdressCoord;
-
-    this.options.center = L.latLng(coord.lat, coord.lng);
-    this.options.zoom = this.zoom;
-    if (this.map) {
-      this.map.setView([coord.lat, coord.lng], this.zoom);
-    }
+    this.leafletService.centerMap(this.map, this.options, coord, this.zoom);
   }
 
   private setLayerWithMarker(isSearchAddress: boolean): void {
-    if (isSearchAddress) {
-      this.layers = [];
-    }
     const coord = isSearchAddress ? this.searchAdressCoord : this.coord;
-
-    const marker: L.Marker = L.marker([coord.lat, coord.lng], {
-      icon: L.icon({
-        iconSize: isSearchAddress ? [25 * 0.5, 41 * 0.5] : [25, 41],
-        iconAnchor: [13, 41],
-        iconUrl: isSearchAddress
-          ? 'assets/marker-icon.png'
-          : 'assets/marker-icon.png', // TODO use other icon for SearchAddress
-        shadowUrl: 'assets/marker-shadow.png',
-      }),
-      opacity: 0.5,
-    })
-      .bindTooltip(this.getTooltipText(isSearchAddress))
-      .bindPopup(
-        isSearchAddress
-          ? this.getPopupTextForSearchAddress()
-          : this.getPopupTextForGasStation()
-      );
-
-    this.layers.push(marker);
+    this.layers = this.leafletService.setLayerWithMarker(isSearchAddress, this.address, this.fuelInfo, this.layers, coord);
   }
 
-  // TODO aufsplitten auf Tankstelle u Suchadresse
-  // sortieren und Ranking
-  private getTooltipText(isSearchAddress: boolean): string {
-    const styleBold = 'style="font-weight: bold;"';
-
-    let styleColor = 'style="color: black;"';
-    if (isSearchAddress) {
-      styleColor = 'style="color: red;"';
-    }
-    return `<div ${styleBold}>${this.fuelInfo.name}</div><div ${styleColor}>${this.fuelInfo.city}</div>, <div ${styleColor}>${this.fuelInfo.price}</div>`;
+  // TODO sort and ranking
+  private getTooltipTextForSearchAddress(searchAddress: string): string {
+    return this.popupTooltipService.getTooltipTextForSearchAddress(searchAddress);
   }
 
-  private getPopupTextForGasStation(): string {
-    const coord = this.coord;
-
-    const table = `<table>
-      <tr>
-        <th colspan="2">Tankstelle ${this.fuelInfo.opened}</th>
-      </tr>
-      <tr>
-        <td>Name</td>
-        <td>${this.fuelInfo.name}</td>
-      </tr>
-      <tr>
-      <td>Ort</td>
-      <td>${this.fuelInfo.city}</td>
-      </tr>
-      <tr>
-        <td>Strasse</td>
-        <td>${this.fuelInfo.address}</td>
-      </tr>
-      <tr>
-        <td>Preis</td>
-        <td>${this.fuelInfo.price}</td>
-      </tr>
-      <tr>
-        <td>Treibstoff</td>
-        <td>${this.fuelInfo.fuelType}</td>
-      </tr>
-      <tr>
-        <td>Breitengrad</td>
-        <td>${coord.lat}</td>
-      </tr>
-      <tr>
-        <td>Längengrad</td>
-        <td>${coord.lng}</td>
-      </tr>
-    </table>`;
-
-    return table;
+  private getTooltipText(fuelInfo: IFuelInfo): string {
+    return this.popupTooltipService.getTooltipText(fuelInfo);
   }
 
-  private getPopupTextForSearchAddress(): string {
-    const coord = this.searchAdressCoord;
+  private getPopupTextForGasStation(coord: L.LatLngLiteral, fuelInfo: IFuelInfo): string {
+    return this.popupTooltipService.getPopupTextForGasStation(coord, fuelInfo);
+  }
 
-    const table = `<table>
-      <tr>
-        <th colspan="2">Gesuchte Adresse</th>
-      </tr>
-      <tr>
-        <td>Typ</td>
-        <td>${this.fuelInfo.addressType}</td>
-      </tr>
-      <tr>
-        <td>Ort</td>
-        <td>${this.fuelInfo.city}</td>
-      </tr>
-      <tr>
-        <td>Strasse</td>
-        <td>${this.fuelInfo.address}</td>
-      </tr>
-      <tr>
-        <td>Breitengrad</td>
-        <td>${coord.lat}</td>
-      </tr>
-      <tr>
-        <td>Längengrad</td>
-        <td>${coord.lng}</td>
-      </tr>
-    </table>`;
-
-    return table;
+  private getPopupTextForSearchAddress(coord: L.LatLngLiteral, fuelInfo: IFuelInfo): string {
+    return this.popupTooltipService.getPopupTextForSearchAddress(coord, fuelInfo);
   }
 
   private setZoomLevel() {

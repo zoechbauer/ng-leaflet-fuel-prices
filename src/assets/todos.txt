@@ -2,7 +2,7 @@ Status    Aktivität
 -------------------------------------------------------------------------------------
 erledigt  alle Aktivitäten vor dieser TODO-Liste
 erledigt  TODO-Liste als Dialog anzeigen
-offen     Refactoring FuelPricesMapComponent -> leaflet Funktionen in Klasse auslagern
+erledigt  Hilfe über App Benutzung als Dialog anzeigen
+erledigt  Refactoring leaflet Funktionen und Tooltip/Popup in eigene Klassen auslagern
 offen     neuen circleMarker mit Radius des Spritpreis Rankings
 offen     Radio Buttons für Auswahl Markertyp (normal oder circle)
-offen     Hilfe über App Benutzung als Dialog anzeigen

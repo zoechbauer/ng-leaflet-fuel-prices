@@ -4,6 +4,7 @@ import * as L from 'leaflet';
 
 import { LeafletService } from '../services/leaflet.service';
 import { AddressType } from '../model/address-type';
+import { PopupTooltipService } from '../services/popup-tooltip.service';
 
 @Component({
   selector: 'app-leaflet-example',
@@ -25,7 +26,8 @@ export class LeafletExampleComponent implements OnInit, AfterViewInit {
 
   constructor(
     private http: HttpClient,
-    private leafletService: LeafletService
+    private leafletService: LeafletService,
+    private popupTooltipService: PopupTooltipService
   ) {}
 
   ngOnInit() {
@@ -34,15 +36,7 @@ export class LeafletExampleComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.options = {
-      layers: [
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          maxZoom: this.maxZoom,
-          attribution: '&copy; OpenStreetMap',
-        }),
-      ],
-      zoom: this.zoom,
-    };
+    this.options = this.leafletService.initMapOptions(this.options, this.zoom, this.maxZoom);
   }
 
   searchAddressAndSetMarker(): void {
@@ -75,12 +69,7 @@ export class LeafletExampleComponent implements OnInit, AfterViewInit {
 
   private centerMap() {
     const coord: L.LatLngLiteral = this.startAdressCoord;
-
-    this.options.center = L.latLng(coord.lat, coord.lng);
-    this.options.zoom = this.zoom;
-    if (this.map) {
-      this.map.setView([coord.lat, coord.lng], this.zoom);
-    }
+    this.leafletService.centerMap(this.map, this.options, coord, this.zoom);
   }
 
   private setLayerWithMarker() {
@@ -108,40 +97,11 @@ export class LeafletExampleComponent implements OnInit, AfterViewInit {
   }
 
   private getTooltipText(): string {
-    const styleBold = 'style="font-weight: bold;"';
-
-    let styleColor = 'style="color: black;"';
-    if (this.isStartAddress) {
-      styleColor = 'style="color: red;"'
-    }
-    return `<div ${styleBold}>${this.address}</div><div ${styleColor}>${this.selectedAddressType.toString()}</div>`;
+    return this.popupTooltipService.getTooltipTextForLeafletEx(this.isStartAddress, this.selectedAddressType, this.address)
   }
 
   private getPopupText(): string {
-    const table =
-    `<table>
-      <tr>
-        <th colspan="2">Detailinformationen</th>
-      </tr>
-      <tr>
-        <td>Typ</td>
-        <td>${this.selectedAddressType}</td>
-      </tr>
-      <tr>
-        <td>Adresse</td>
-        <td>${this.address}</td>
-      </tr>
-      <tr>
-        <td>Breitengrad</td>
-        <td>${this.coord.lat}</td>
-      </tr>
-      <tr>
-        <td>Längengrad</td>
-        <td>${this.coord.lng}</td>
-      </tr>
-    </table>`
-
-    return table;
+    return this.popupTooltipService.getPopupTextForLeafletEx(this.coord, this.selectedAddressType, this.address)
   }
 
   private setZoomLevel() {
