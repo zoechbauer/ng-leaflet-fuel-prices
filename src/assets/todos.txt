@@ -7,3 +7,4 @@ erledigt  Refactoring leaflet Funktionen und Tooltip/Popup in eigene Klassen aus
 erledigt  neuen circleMarker für Tankstellen mit Preis
 erledigt  Radius des circleMarkers hängt von Preis ab, kleinster Preis = größter Radius
 erledigt  das Ranking wird auch im Popup und tooltip angezeigt
+offen     Lng/Lat in Tooltip u PopUp in Grad/Min umrechnen - vgl. e-control-Beispiel
