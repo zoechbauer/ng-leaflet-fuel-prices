@@ -3,6 +3,7 @@ export interface IFuelInfo  {
   name?: string;
   city: string;
   address: string;
+  ranking?: number;
   price?: string;
   fuelType?: string;
   opened?: string;

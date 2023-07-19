@@ -154,6 +154,7 @@ export class LeafletService {
     console.log('Circle radius', radius);
 
     return radius;
+    
   }
 
   private getRankingSum(priceRankingMap: Map<number, number>): number {

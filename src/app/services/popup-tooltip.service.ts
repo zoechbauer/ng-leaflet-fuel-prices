@@ -3,26 +3,28 @@ import { IFuelInfo } from '../model/ifuel-info';
 import { AddressType } from '../model/address-type';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PopupTooltipService {
-
-  constructor() { }
+  constructor() {}
 
   getTooltipTextForSearchAddress(searchAddress: string): string {
     const styleBold = 'style="font-weight: bold;"';
     const styleColor = 'style="color: red;"';
-    const titel = "Ermittelte Adresse aus Suchadresse";
+    const titel = 'Ermittelte Adresse aus Suchadresse';
     return `<div ${styleBold}>${titel}</div><div ${styleColor}>${searchAddress}</div>`;
   }
 
   getTooltipText(fuelInfo: IFuelInfo): string {
     const styleBold = 'style="font-weight: bold;"';
     const styleColor = 'style="color: black;"';
-    return `<div ${styleBold}>${fuelInfo.name}</div><div ${styleColor}>${fuelInfo.city}</div>, <div ${styleColor}>${fuelInfo.price}</div>`;
+    return `<div ${styleBold}>${fuelInfo.name}</div><div ${styleColor}>${fuelInfo.city}</div><div ${styleColor}>${fuelInfo.address}</div><div ${styleColor}>${this.getRanking(fuelInfo, true)}</div><div ${styleColor}>${this.formatPrice(fuelInfo, true)}</div>`;
   }
 
-  getPopupTextForGasStation(coord: L.LatLngLiteral, fuelInfo: IFuelInfo): string {
+  getPopupTextForGasStation(
+    coord: L.LatLngLiteral,
+    fuelInfo: IFuelInfo
+  ): string {
     const table = `<table>
       <tr>
         <th colspan="2">Tankstelle ${fuelInfo.opened}</th>
@@ -40,8 +42,12 @@ export class PopupTooltipService {
         <td>${fuelInfo.address}</td>
       </tr>
       <tr>
+        <td>Rang</td>
+        <td>${this.getRanking(fuelInfo, false)}</td>
+      </tr>
+      <tr>
         <td>Preis</td>
-        <td>${fuelInfo.price}</td>
+        <td>${this.formatPrice(fuelInfo, false)}</td>
       </tr>
       <tr>
         <td>Treibstoff</td>
@@ -60,7 +66,10 @@ export class PopupTooltipService {
     return table;
   }
 
-  getPopupTextForSearchAddress(coord: L.LatLngLiteral, searchAddress: string): string {
+  getPopupTextForSearchAddress(
+    coord: L.LatLngLiteral,
+    searchAddress: string
+  ): string {
     const table = `<table>
       <tr>
         <th colspan="2">Tankstellen werden gesucht für:</th>
@@ -82,19 +91,26 @@ export class PopupTooltipService {
     return table;
   }
 
-  getTooltipTextForLeafletEx(isStartAddress: boolean, selectedAddressType: AddressType, address: string): string {
+  getTooltipTextForLeafletEx(
+    isStartAddress: boolean,
+    selectedAddressType: AddressType,
+    address: string
+  ): string {
     const styleBold = 'style="font-weight: bold;"';
 
     let styleColor = 'style="color: black;"';
     if (isStartAddress) {
-      styleColor = 'style="color: red;"'
+      styleColor = 'style="color: red;"';
     }
     return `<div ${styleBold}>${address}</div><div ${styleColor}>${selectedAddressType.toString()}</div>`;
   }
 
-  getPopupTextForLeafletEx(coord: L.LatLngLiteral, selectedAddressType: AddressType, address: string): string {
-    const table =
-    `<table>
+  getPopupTextForLeafletEx(
+    coord: L.LatLngLiteral,
+    selectedAddressType: AddressType,
+    address: string
+  ): string {
+    const table = `<table>
       <tr>
         <th colspan="2">Detailinformationen</th>
       </tr>
@@ -114,9 +130,38 @@ export class PopupTooltipService {
         <td>Längengrad</td>
         <td>${coord.lng}</td>
       </tr>
-    </table>`
+    </table>`;
 
     return table;
+  }
+
+  private formatPrice(fuelInfo: IFuelInfo, withFuelType: boolean): string {
+    if (fuelInfo.price === "unbekannt") {
+      return "<b>keine Preisinformationen verfügbar!</b>"
+    }
+
+    let price =  "<b>" + fuelInfo.price?.replace(".", ",") + ' €' + "</b>";
+
+    if (withFuelType) {
+      return price + " / " + fuelInfo.fuelType;
+    } else {
+      return price;
+    }
+  }
+
+  private getRanking(fuelInfo: IFuelInfo, withLabel: boolean): string {
+    if (fuelInfo.price === "unbekannt") {
+      return ""
+    }
+
+    let label = "<b>Rang: </b>";
+    let ranking = `<b>${fuelInfo.ranking}</b>`
+
+    if (withLabel) {
+      return label + ranking;
+    } else {
+      return ranking;
+    }
   }
 
 }

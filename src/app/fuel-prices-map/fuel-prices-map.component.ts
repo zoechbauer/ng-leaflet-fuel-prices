@@ -117,6 +117,7 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
   private createPriceRanking() {
     this.priceRankingMap = new Map<number, number>();
     let i = 1;
+    let priceSv = "";
 
     from(this.gasStations).pipe(
       map(gs => gs.prices),
@@ -124,10 +125,24 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
       map(prices => prices[0]),
       map(priceObj => priceObj["amount"])
     ).subscribe(price => {
-      this.priceRankingMap.set(+price, i++)
+      if (price !== priceSv) {
+        this.priceRankingMap.set(+price, i++);
+        priceSv = price;
+      }
     });
     console.log('priceRankingMap',this.priceRankingMap);
   }
+
+  // TODO delete
+  // private updatePriceRankingInFuelInfo() {
+  //   this.gasStations.forEach(gs => {
+  //     if (gs.prices.length > 0) {
+  //       const price: number = +gs.prices[0];
+  //       const ranking: number | undefined = this.priceRankingMap.get(price);
+  //       gs.r
+  //     }
+  //   })
+  // }
 
   setSearchAddressMarker(): void {
     this.setFuelInfos(true, null);
@@ -169,6 +184,7 @@ export class FuelPricesMapComponent implements OnInit, AfterViewInit {
         name: `${gasStation?.name}`,
         city: `${gasStation?.location.postalCode}  ${gasStation?.location.city}` ,
         address: `${gasStation?.location.address}`,
+        ranking: this.priceRankingMap.get(+amount),
         price: `${amount}`,
         fuelType: `${fuelType}`,
         opened: `${opened}`,
