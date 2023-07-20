@@ -60,30 +60,8 @@ export class GetCoordExampleComponent implements OnInit{
     };
   }
 
-  // TODO convertCoordToDegrees  -> GeocodingService
-
   private calcCoordInDeg(): void {
-    this.calcCoordDeg(this.coordinates.lat, true);
-    this.calcCoordDeg(this.coordinates.lng, false);
+    this.latDeg = this.geocodingService.convertCoordinate(this.coordinates.lat);
+    this.lngDeg = this.geocodingService.convertCoordinate(this.coordinates.lng);
   }
-
-  private calcCoordDeg(latLng: number, isLat: boolean): void {
-    let deg: number, min: number, sec: number, result:number, decimals: number;
-
-    deg = Math.floor(latLng);
-    decimals = latLng - deg;
-
-    result = decimals * 60;
-    min = Math.floor(result);
-    decimals = result - min;
-
-    sec = Math.round(decimals * 60);
-
-    if (isLat) {
-      this.latDeg = `${deg}° ${min}" ${sec}'`;
-    } else {
-      this.lngDeg = `${deg}° ${min}" ${sec}'`;
-    }
-  }
-
 }

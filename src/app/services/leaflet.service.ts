@@ -150,7 +150,7 @@ export class LeafletService {
 
     const priceVal = price ? +price : 0;
     const ranking = priceRankingMap.get(priceVal);
-    const radius = (ranking ? rankingSum * 3 - ranking * 3 : 0);
+    const radius = Math.max((ranking ? rankingSum * 3 - ranking * 3 : 0), 20);
     console.log('Circle radius', radius);
 
     return radius;

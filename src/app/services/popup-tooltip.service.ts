@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { IFuelInfo } from '../model/ifuel-info';
 import { AddressType } from '../model/address-type';
+import { GeocodingService } from './geocoding.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PopupTooltipService {
-  constructor() {}
+  constructor(private geocodingService: GeocodingService) {}
 
   getTooltipTextForSearchAddress(searchAddress: string): string {
     const styleBold = 'style="font-weight: bold;"';
@@ -55,11 +56,11 @@ export class PopupTooltipService {
       </tr>
       <tr>
         <td>Breitengrad</td>
-        <td>${coord.lat}</td>
+        <td>${this.geocodingService.convertCoordinate(coord.lat)}</td>
       </tr>
       <tr>
         <td>Längengrad</td>
-        <td>${coord.lng}</td>
+        <td>${this.geocodingService.convertCoordinate(coord.lng)}</td>
       </tr>
     </table>`;
 
@@ -80,11 +81,11 @@ export class PopupTooltipService {
       </tr>
       <tr>
         <td>Breitengrad</td>
-        <td>${coord.lat}</td>
+        <td>${this.geocodingService.convertCoordinate(coord.lat)}</td>
       </tr>
       <tr>
         <td>Längengrad</td>
-        <td>${coord.lng}</td>
+        <td>${this.geocodingService.convertCoordinate(coord.lng)}</td>
       </tr>
     </table>`;
 
@@ -124,11 +125,11 @@ export class PopupTooltipService {
       </tr>
       <tr>
         <td>Breitengrad</td>
-        <td>${coord.lat}</td>
+        <td>${this.geocodingService.convertCoordinate(coord.lat)}</td>
       </tr>
       <tr>
         <td>Längengrad</td>
-        <td>${coord.lng}</td>
+        <td>${this.geocodingService.convertCoordinate(coord.lng)}</td>
       </tr>
     </table>`;
 
