@@ -83,11 +83,16 @@ export class LeafletService {
       layers = [];
     }
 
-    const rankingSum = this.getRankingSum(priceRankingMap);
+    const maxRanking = this.getMaxRank(priceRankingMap);
     let marker: L.Marker<any> | L.CircleMarker;
 
     if (fuelInfo && fuelInfo.price !== 'unbekannt') {
-      marker = this.setCircleMarker(coord, fuelInfo.price, priceRankingMap, rankingSum);
+      marker = this.setCircleMarker(
+        coord,
+        fuelInfo.price,
+        priceRankingMap,
+        maxRanking
+      );
     } else {
       marker = this.setMarker(coord, isSearchAddress);
     }
@@ -116,14 +121,18 @@ export class LeafletService {
     coord: L.LatLngLiteral,
     isSearchAddress: boolean
   ): L.Marker {
+    const factorSearchAddr = 1.5;
+    const pointX = 25;
+    const pointY = 41;
     const marker = L.marker([coord.lat, coord.lng], {
       icon: L.icon({
-        iconSize: isSearchAddress ? [25 * 1.5, 41 * 1.5] : [25, 41],
+        iconSize: isSearchAddress ? [pointX * factorSearchAddr, pointY * factorSearchAddr] : [pointX, pointY],
         iconAnchor: [13, 41],
         iconUrl: 'assets/marker-icon.png',
         shadowUrl: 'assets/marker-shadow.png',
       }),
-      opacity: 0.5,
+      opacity: 0.4
+      ,
     });
     return marker;
   }
@@ -132,12 +141,12 @@ export class LeafletService {
     coord: L.LatLngLiteral,
     price: string | undefined,
     priceRankingMap: Map<number, number>,
-    rankingSum: number
+    maxRanking: number
   ): L.CircleMarker {
-
     const circleMarker = L.circleMarker([coord.lat, coord.lng], {
-      radius: this.calcCircleRadius(price, priceRankingMap, rankingSum),
-      opacity: 0.5,
+      radius: this.calcCircleRadius(price, priceRankingMap, maxRanking),
+      opacity: 0.8
+      ,
     });
     return circleMarker;
   }
@@ -145,23 +154,32 @@ export class LeafletService {
   private calcCircleRadius(
     price: string | undefined,
     priceRankingMap: Map<number, number>,
-    rankingSum: number
+    maxRanking: number
   ): number {
+    const minRadius = 15;
+    const maxRadius = 30;
+    const radiusRange = maxRadius - minRadius;
 
-    const priceVal = price ? +price : 0;
+    const priceVal = +price!;
     const ranking = priceRankingMap.get(priceVal);
-    const radius = Math.max((ranking ? rankingSum * 3 - ranking * 3 : 0), 20);
-    console.log('Circle radius', radius);
 
+    let normalizedValue = 1;
+    if (maxRanking > 1) {
+      normalizedValue = (maxRanking - ranking!) / (maxRanking - 1);
+    }
+
+    const radius = minRadius + normalizedValue * radiusRange;
     return radius;
-    
   }
 
-  private getRankingSum(priceRankingMap: Map<number, number>): number {
-    let sum = 0;
+  private getMaxRank(priceRankingMap: Map<number, number>): number {
+    let maxRank = 1;
+
     priceRankingMap.forEach((value) => {
-      sum += value;
+      if (value > maxRank) {
+        maxRank = value;
+      }
     });
-    return sum;
+    return maxRank;
   }
 }

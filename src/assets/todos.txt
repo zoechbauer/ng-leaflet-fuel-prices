@@ -8,4 +8,4 @@ erledigt  neuen circleMarker für Tankstellen mit Preis
 erledigt  Radius des circleMarkers hängt von Preis ab, kleinster Preis = größter Radius
 erledigt  das Ranking wird auch im Popup und tooltip angezeigt
 erledigt  Längen- und Breitengrad in Tooltip u PopUp in Grad/Min umrechnen
-offen     Verbessergung der Marker-Größen Darstellung
+erledigt  Verbessergung der Marker-Größen Darstellung
